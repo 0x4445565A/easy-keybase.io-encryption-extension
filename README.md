@@ -11,3 +11,6 @@ For more information on the Keybase.io API...
 https://keybase.io/docs/api/1.0
 
 Sign up for KeyBase.io and start encrypting things today (Or just use PGP but that's less fun)...
+
+### NOTE ###
+The pastebin support does work but PGP encrypted messages can sometimes get pegged as spam.  You can still view them through the link you just have to pass the captcha first when viewing the link.
