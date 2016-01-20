@@ -1,5 +1,15 @@
 <!DOCTYPE html>
 <html>
+  <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                   P L E A S E  H A V E  A  L O O K
+
+               See something you want to change or add?
+                          Add to the repo!
+    https://github.com/tehbmar/easy-keybase.io-encryption-extension
+
+         Also checkout keybase if you aren't already using it!
+                       https://keybase.io/bmar
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
   <head>
     <script src="/js/kbpgp-2.0.8-min.js"></script>
     <script src="/js/jquery-2.2.0.min.js"></script>
@@ -8,11 +18,34 @@
     <style>
       body {
         width: 500px;
-        padding: 10px;
+        background: #FAFAFA;
       }
       button {
         text-transform: uppercase;
         width: 100%;
+      }
+      .row {
+        padding: 10px;
+      }
+      .row.header {
+        background: #333;
+        padding: 0;
+        padding-left: 10px;
+        line-height: 30px;
+        height: 50px;
+      }
+      .row.header h2 {
+        margin: 0;
+        margin-top: 10px;
+        text-shadow: 1px 1px 1px #e64f00; 
+        color: #FF8748;
+        font-weight: bold;
+      }
+      .row.content {
+        border-top: 4px solid rgba(0,0,0,0.3);
+      }
+      #logo {
+        max-width: 90%;
       }
       .result {
         display: none;
@@ -25,6 +58,7 @@
       textarea.form-control {
         height: 200px;
         width: 480px;
+        resize: none;
       }
       .auto-complete-container {
         position: relative;
@@ -41,13 +75,13 @@
       ul.kb-auto-complete li {
         cursor: pointer;
         padding: 5px;
-        background: rgb(224, 224, 224);
+        background: rgb(234, 234, 234);
       }
       ul.kb-auto-complete li:nth-child(even) {
-        background: rgb(192, 192, 192);
+        background: rgb(212, 212, 212);
       }
       ul.kb-auto-complete li:hover {
-        background: rgb(150, 150, 150);
+        background: rgb(200, 200, 200);
       }
       ul.kb-auto-complete li img {
         width: 35px;
@@ -61,6 +95,9 @@
         font-weight: bold;
         color: #fc8558;
       }
+      ul.kb-auto-complete li span.public-key-fingerprint {
+        color: #00bff0;
+      }
       .status {
         font-size: 8px;
       }
@@ -72,7 +109,10 @@
   </head>
   <body>
     <div class="container-fluid">
-      <div class="row">
+      <div class="row header">
+        <h2>Easy KeyBase.io Encrypt</h2>
+      </div>
+      <div class="row content">
         <span class="has-error col-md-12 "><label class="control-label error-text"></label></span>
         <span class="auto-complete-container">
           <input class="form-control keybase-account" placeholder="Keybase.io User..">

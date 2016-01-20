@@ -18,8 +18,10 @@ $(document).ready(function() {
             break;
           }
           var components = result.completions[i].components;
+          var key_fingerprint = components.key_fingerprint.val.substr(-16).toUpperCase().replace(/(.{4})/g,"$1 ");
+          console.log(key_fingerprint);
           var accountImage = result.completions[i].thumbnail != null ? result.completions[i].thumbnail : '/images/no_photo.png';
-          appendString = '<li val="' + components.username.val + '"><img src="' + accountImage + '"><span class="account-name">' + components.username.val + '</span></li>';
+          appendString = '<li val="' + components.username.val + '"><img src="' + accountImage + '"><span class="account-name">' + components.username.val + '</span><span class="public-key-fingerprint">' + key_fingerprint + '</span></li>';
           $('.kb-auto-complete').append(appendString);
         }
       }
