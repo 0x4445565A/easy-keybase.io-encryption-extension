@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
   /**
    * Set event listener on dynamic li items.
    */
@@ -125,10 +124,8 @@ function encryptData(data, account_pgp_key) {
       if (!err) {
         // Update status.
         $('.status').html($('.status').html() + ' Done!');
-        // Send PGP encrypted message to result textarea
-        $('.result').text(result_armored);
-        // Show the textarea
-        $('.result').show();
+        // Send PGP encrypted message to the textarea
+        $('.to-encrypt').text(result_armored);
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.
