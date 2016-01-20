@@ -73,9 +73,8 @@ $(document).ready(function() {
     $.get("https://keybase.io/" + account_name + "/key.asc", function(account_pgp_key) {
       // Update status message.
       $('.status').html($('.status').html() + ' Key found!');
-
       // Encrypt the data!
-      encryptData(data, account_pgp_key);
+      encryptData(data, account_pgp_key, $('.pastebin-option').is(':checked'));
     }).fail(function(error) {
       // Oh no...
       console.log(error);
@@ -87,7 +86,7 @@ $(document).ready(function() {
 /**
  * Given a keybase.io public key and message return an encrypted pgp message.
  */
-function encryptData(data, account_pgp_key) {
+function encryptData(data, account_pgp_key, pastebin) {
   var account = false;
   // Update status message.
   $('.status').html($('.status').html() + ' Importing key...');
@@ -126,6 +125,30 @@ function encryptData(data, account_pgp_key) {
         $('.status').html($('.status').html() + ' Done!');
         // Send PGP encrypted message to the textarea
         $('.to-encrypt').val(result_armored);
+        if (pastebin) {
+          $.ajax({
+            url: "https://pastebin.com/api/api_post.php",
+            method: "POST",
+            data: {
+              api_option: 'paste',
+              api_user_key: '',
+              api_dev_key: 'a32102de661252014f679a114ee67688',
+              api_paste_private: '1',
+              api_paste_expire_date: 'N',
+              api_paste_format: 'text',
+              api_paste_name: '',
+              api_paste_code: result_armored,
+            },
+            success: function(result) {
+              var pastebin_url = 'https://pastebin.com/raw/' + result.substr(20);
+              $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + "| keybase pgp decrypt\n--------------------------");
+              $('.pastebin').html('<a href="' + pastebin_url + '">' + pastebin_url + '</a>');
+            }
+          });
+        }
+        else {
+          $('.pastebin').html('');
+        }
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.
@@ -135,3 +158,23 @@ function encryptData(data, account_pgp_key) {
     });
   }
 }
+
+/*
+$.ajax({
+  url: "https://pastebin.com/api/api_post.php",
+  method: "POST",
+  data: {
+    api_option: 'paste',
+    api_user_key: '',
+    api_dev_key: 'a32102de661252014f679a114ee67688',
+    api_paste_private: '1',
+    api_paste_expire_date: 'N',
+    api_paste_format: 'text',
+    api_paste_name: '',
+    api_paste_code: 'testing woop woop!',
+  },
+  success: function(result) {
+    console.log('https://pastebin.com/raw/' + result.substr(20));
+  }
+});
+*/

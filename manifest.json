@@ -4,7 +4,8 @@
   "description": "Easy KeyBase.io Public Key Encryption.",
   "version": "0.1",
   "permissions": [
-    "https://keybase.io/*"
+    "https://keybase.io/*",
+    "https://pastebin.com/api/api_post.php"
   ],
   "icons": {
     "128": "icons/icon128.png"
