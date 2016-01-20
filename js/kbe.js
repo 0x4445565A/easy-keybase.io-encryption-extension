@@ -143,14 +143,23 @@ function encryptData(data, account_pgp_key, pastebin, clipboard) {
               var pastebin_url = 'https://pastebin.com/raw/' + result.substr(20);
               $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + " | keybase pgp decrypt\n--------------------------");
               $('.pastebin').html('<a href="' + pastebin_url + '" target="_blank">' + pastebin_url + '</a>');
+              var pastebin_text = $('<textarea/>');
+              pastebin_text.text(pastebin_url);
+              $('body').append(pastebin_text);
+              pastebin_text.select();
+              document.execCommand('copy', true);
+              pastebin_text.remove();
+
             }
           });
         }
         else {
           $('.pastebin').html('');
         }
-        $('.to-encrypt').select();
-        document.execCommand('copy', true);
+        if (clipboard) {
+          $('.to-encrypt').select();
+          document.execCommand('copy', true);
+        }
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.
