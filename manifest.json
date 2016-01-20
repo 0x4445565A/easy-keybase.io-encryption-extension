@@ -4,6 +4,7 @@
   "description": "Easy KeyBase.io Public Key Encryption.",
   "version": "0.1",
   "permissions": [
+    "clipboardWrite",
     "https://keybase.io/*",
     "https://pastebin.com/api/api_post.php"
   ],

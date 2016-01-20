@@ -74,7 +74,7 @@ $(document).ready(function() {
       // Update status message.
       $('.status').html($('.status').html() + ' Key found!');
       // Encrypt the data!
-      encryptData(data, account_pgp_key, $('.pastebin-option').is(':checked'));
+      encryptData(data, account_pgp_key, $('.pastebin-option').is(':checked'), $('.clipboard-option').is(':checked'));
     }).fail(function(error) {
       // Oh no...
       console.log(error);
@@ -86,7 +86,7 @@ $(document).ready(function() {
 /**
  * Given a keybase.io public key and message return an encrypted pgp message.
  */
-function encryptData(data, account_pgp_key, pastebin) {
+function encryptData(data, account_pgp_key, pastebin, clipboard) {
   var account = false;
   // Update status message.
   $('.status').html($('.status').html() + ' Importing key...');
@@ -149,6 +149,8 @@ function encryptData(data, account_pgp_key, pastebin) {
         else {
           $('.pastebin').html('');
         }
+        $('.to-encrypt').select();
+        document.execCommand('copy', true);
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.
