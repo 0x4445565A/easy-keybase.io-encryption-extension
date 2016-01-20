@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/js/kbpgp-2.0.8-min.js"></script>
+    <script src="/js/jquery-2.2.0.min.js"></script>
+    <script src="/js/kbe.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+      body {
+        width: 500px;
+        padding: 10px;
+      }
+      button {
+        text-transform: uppercase;
+        width: 100%;
+      }
+      .result {
+        display: none;
+        color: rgba(0, 0, 0, 0.6);
+        font-size: 10px;
+      }
+      .form-control {
+        border-radius: 0;
+      }
+      textarea.form-control {
+        height: 200px;
+        width: 480px;
+      }
+      .auto-complete-container {
+        position: relative;
+      }
+      ul.kb-auto-complete {
+        list-style: none;
+        padding: 0;
+        border: 1px solid rgba(0, 0, 0, 0.3);
+        position: absolute;
+        z-index: 9999;
+        width: 480px;
+        display:none;
+      }
+      ul.kb-auto-complete li {
+        cursor: pointer;
+        padding: 5px;
+        background: rgb(224, 224, 224);
+      }
+      ul.kb-auto-complete li:nth-child(even) {
+        background: rgb(192, 192, 192);
+      }
+      ul.kb-auto-complete li:hover {
+        background: rgb(150, 150, 150);
+      }
+      ul.kb-auto-complete li img {
+        width: 35px;
+        border-radius: 50%;
+        padding-right: 5px;
+      }
+      ul.kb-auto-complete li span {
+        padding: 0 5px;
+      }
+      ul.kb-auto-complete li span.account-name {
+        font-weight: bold;
+        color: #fc8558;
+      }
+      .status {
+        font-size: 8px;
+      }
+      .opensource {
+        line-height: 2px;
+        font-size: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <span class="has-error col-md-12 "><label class="control-label error-text"></label></span>
+        <span class="auto-complete-container">
+          <input class="form-control keybase-account" placeholder="Keybase.io User..">
+          <ul class="kb-auto-complete">
+          </ul>
+        </span>
+        <p><textarea class="to-encrypt col-md-12 form-control" placeholder="Text to be encrypted..."></textarea></p>
+        <p><button type="submit" class="btn btn-primary col-md-12 encrypt-action">Encrypt</button></p>
+        <p><textarea class="result col-md-12 form-control"></textarea></p>
+        <span class="status"></span>
+        <div class="opensource">
+        <p>For the sake of being open I am providing easy access to the javascript used in this extension</p>
+        <p>Full source availible here: <a href="https://github.com/tehbmar/easy-keybase.io-encryption-extension" target="_blank">Github</a></p>
+        <p><a href="/js/kbe.js" target="_blank">kbe.js</a>
+        <a href="/js/jquery-2.2.0.min.js" target="_blank">jquery-2.2.0.min.js</a>
+        <a href="/js/kbpgp-2.0.8-min.js" target="_blank">kbpgp-2.0.8-min.js</a>
+        </p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
