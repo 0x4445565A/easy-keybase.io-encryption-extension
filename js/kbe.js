@@ -141,7 +141,7 @@ function encryptData(data, account_pgp_key, pastebin) {
             },
             success: function(result) {
               var pastebin_url = 'https://pastebin.com/raw/' + result.substr(20);
-              $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + "| keybase pgp decrypt\n--------------------------");
+              $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + " | keybase pgp decrypt\n--------------------------");
               $('.pastebin').html('<a href="' + pastebin_url + '">' + pastebin_url + '</a>');
             }
           });
