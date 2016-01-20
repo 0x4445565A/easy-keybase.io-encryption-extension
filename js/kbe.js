@@ -125,7 +125,7 @@ function encryptData(data, account_pgp_key) {
         // Update status.
         $('.status').html($('.status').html() + ' Done!');
         // Send PGP encrypted message to the textarea
-        $('.to-encrypt').text(result_armored);
+        $('.to-encrypt').val(result_armored);
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.
