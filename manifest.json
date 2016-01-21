@@ -4,7 +4,6 @@
   "description": "Easy KeyBase.io Public Key Encryption.",
   "version": "0.1",
   "permissions": [
-    "tabs",
     "contextMenus",
     "clipboardWrite",
     "https://keybase.io/*",

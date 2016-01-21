@@ -1,10 +1,15 @@
 $(document).ready(function() {
+
+  /**
+   * Thanks to
+   * http://www.jquerybyexample.net/2012/06/get-url-parameters-using-jquery.html
+   * for the snippet!
+   */
   var getUrlParameter = function getUrlParameter(sParam) {
     var sPageURL = decodeURIComponent(window.location.search.substring(1)),
         sURLVariables = sPageURL.split('&'),
         sParameterName,
         i;
-
     for (i = 0; i < sURLVariables.length; i++) {
         sParameterName = sURLVariables[i].split('=');
 
@@ -13,6 +18,7 @@ $(document).ready(function() {
         }
     }
   };
+
   if (queryData = getUrlParameter('m')) {
     $('.to-encrypt').val(decodeURIComponent(window.atob(queryData)));
   }
