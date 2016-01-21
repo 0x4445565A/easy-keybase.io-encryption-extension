@@ -1,8 +1,20 @@
 # Easy KeyBase.io Encrypt Extension
 A Google Chrome extension that uses public keys from [keybase.io](https://keybase.io/) to encrypt messages.
 
-Easything is transparent and done completely in javascript.
+Easy KeyBase.io is transparent and done completely in javascript.
 While some do not like this (encrypting with JS) it's the only real option for a chrome extension.
+
+### Features ###
+- Encrypting messages with public keys from [keybase.io](https://keybase.io/)
+- Auto complete Keybase.io searching
+- Immediately copy encrypted text to clipboard
+- Export straight to [pastebin](https://pastebin.com]
+- Highlighted text can be right clicked and encrypted
+
+### More Info ###
+
+For the Chrome Extension:
+- [Easy KeyBase.io Encryption](https://chrome.google.com/webstore/detail/easy-keybaseio-encryption/bhoocemedffiopognacolpjbnpncdegk)
 
 For more information on Keybase.io's kbpgp.js:
 - https://github.com/keybase/kbpgp
