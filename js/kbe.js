@@ -1,4 +1,22 @@
 $(document).ready(function() {
+  var getUrlParameter = function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
+  };
+  if (queryData = getUrlParameter('m')) {
+    $('.to-encrypt').val(decodeURIComponent(window.atob(queryData)));
+  }
+  $('.keybase-account').focus();
   /**
    * Set event listener on dynamic li items.
    */
@@ -61,7 +79,7 @@ $(document).ready(function() {
    * Grab public key and encrypt message upon clicking submit button.
    */
   $('button.encrypt-action').click(function() {
-
+    $('.has-error .error-text').text('');
     // Grab the account name and message.
     var account_name = $('.keybase-account').val();
     var data = $('.to-encrypt').val();
@@ -149,7 +167,6 @@ function encryptData(data, account_pgp_key, pastebin, clipboard) {
               pastebin_text.select();
               document.execCommand('copy', true);
               pastebin_text.remove();
-
             }
           });
         }
@@ -160,6 +177,8 @@ function encryptData(data, account_pgp_key, pastebin, clipboard) {
           $('.to-encrypt').select();
           document.execCommand('copy', true);
         }
+        $('.complete').animate({ opacity: 1 }, 200);
+        $('.complete').delay(2000).animate({ opacity: 0 }, 1700);
       }
       else {
         // Oh no.. I don't see how this could happen but here is the catch if it does.

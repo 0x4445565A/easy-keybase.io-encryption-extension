@@ -4,12 +4,20 @@
   "description": "Easy KeyBase.io Public Key Encryption.",
   "version": "0.1",
   "permissions": [
+    "tabs",
+    "contextMenus",
     "clipboardWrite",
     "https://keybase.io/*",
     "https://pastebin.com/api/api_post.php"
   ],
   "icons": {
     "128": "icons/icon128.png"
+  },
+  "background" : { "scripts":
+    [
+      "js/kbpgp-2.0.8-min.js",
+      "js/kbeRightClick.js"
+    ]
   },
   "browser_action": {
     "default_icon": "icons/icon128.png",

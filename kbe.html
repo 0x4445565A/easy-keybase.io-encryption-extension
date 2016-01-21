@@ -17,8 +17,13 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
       body {
-        width: 500px;
+        width: 100%;
         background: #FAFAFA;
+
+      }
+      .container-fluid {
+        margin: 0 auto;
+        width: 500px;
       }
       button.encrypt-action {
         text-transform: uppercase;
@@ -103,12 +108,29 @@
         line-height: 2px;
         font-size: 10px;
       }
+      .has-error {
+        margin-top: 2px;
+        margin-bottom: 2px;
+      }
+      .complete {
+        opacity: 0;
+        position: absolute;
+        width: 480px;
+        background: rgba(0, 100, 0, 0.5);
+        padding: 2px;
+        padding-left: 10px;
+        color: #FFF;
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
     <div class="container-fluid">
       <div class="row content">
         <span class="has-error col-md-12 "><label class="control-label error-text"></label></span>
+        <div class="complete">
+          Encryption complete and copied!
+        </div>
         <span class="auto-complete-container">
           <input class="form-control keybase-account" placeholder="Keybase.io User..">
           <ul class="kb-auto-complete">
