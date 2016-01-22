@@ -43,12 +43,12 @@ $(document).ready(function() {
   $('.keybase-account').on('input', function() {
     // Show autocomplete.
     $('ul.kb-auto-complete').show();
-
+    var query = $(this).val();
     // Send Ajax get to the keybase.io API using the current input.
     $.ajax({
       url: "https://keybase.io/_/api/1.0/user/autocomplete.json",
       data: {
-        q: $(this).val(),
+        q: query,
       },
       success: function(result) {
         // Clear out current list items.
@@ -65,12 +65,26 @@ $(document).ready(function() {
           var components = result.completions[i].components;
           var key_fingerprint = components.key_fingerprint.val.substr(-16).toUpperCase().replace(/(.{4})/g,"$1 ");
           var accountImage = result.completions[i].thumbnail != null ? result.completions[i].thumbnail : '/images/no_photo.png';
-
+          console.log(components);
+          var highestComponent = components.username;
+          for (var i in components) {
+            if (!highestComponent.hasOwnProperty('score')
+                || (typeof components[i].hasOwnProperty('score') != 'undefined'
+                    && components[i].score > highestComponent.score)) {
+              highestComponent = components[i];
+            }
+          }
+          console.log(highestComponent);
+          var highestComponentSearch = highestComponent.val;
+          var re = new RegExp(query, "i");
+          highestComponentSearch = highestComponentSearch.replace(re, '<span class="search-highlight">' + query + '</span>');
           // Create HTML to be inserted into autocomplete list.
           var appendString = '<li val="' + components.username.val + '">' +
                              '<img src="' + accountImage + '">' +
                              '<span class="account-name">' +
                              components.username.val +
+                             '</span><span class="account-search-info">' +
+                             highestComponentSearch +
                              '</span><span class="public-key-fingerprint">' +
                              key_fingerprint + '</span></li>';
 
