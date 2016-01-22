@@ -104,7 +104,7 @@ $(document).ready(function() {
               var social_media_icon = 'key';
               break;
             case 'username':
-              var social_media_icon = 'key';
+              var social_media_icon = '';
               break;
             default:
               var social_media_icon = 'search';
@@ -115,7 +115,7 @@ $(document).ready(function() {
                              components.username.val +
                              '</span><span class="account-search-info fa fa-' + social_media_icon + '"> ' +
                              highestComponentSearch +
-                             '</span><span class="public-key-fingerprint">' +
+                             '</span><span class="public-key-fingerprint fa fa-key">' +
                              key_fingerprint + '</span></li>';
 
           // Append list item to autocomplete list.
