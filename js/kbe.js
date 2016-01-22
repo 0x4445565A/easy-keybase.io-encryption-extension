@@ -67,11 +67,13 @@ $(document).ready(function() {
           var accountImage = result.completions[i].thumbnail != null ? result.completions[i].thumbnail : '/images/no_photo.png';
           console.log(components);
           var highestComponent = components.username;
+          highestComponent.media = 'username';
           for (var i in components) {
             if (!highestComponent.hasOwnProperty('score')
                 || (typeof components[i].hasOwnProperty('score') != 'undefined'
                     && components[i].score > highestComponent.score)) {
               highestComponent = components[i];
+              highestComponent.media = i;
             }
           }
           console.log(highestComponent);
@@ -79,11 +81,39 @@ $(document).ready(function() {
           var re = new RegExp(query, "i");
           highestComponentSearch = highestComponentSearch.replace(re, '<span class="search-highlight">' + query + '</span>');
           // Create HTML to be inserted into autocomplete list.
+          switch (highestComponent.media) {
+            case 'coinbase':
+              var social_media_icon = 'btc';
+              break;
+            case 'full_name':
+              var social_media_icon = 'user';
+              break;
+            case 'github':
+              var social_media_icon = 'github';
+              break;
+            case 'hackernews':
+              var social_media_icon = 'hacker-news';
+              break;
+            case 'reddit':
+              var social_media_icon = 'reddit';
+              break;
+            case 'twitter':
+              var social_media_icon = 'twitter';
+              break;
+            case 'key_fingerprint':
+              var social_media_icon = 'key';
+              break;
+            case 'username':
+              var social_media_icon = 'key';
+              break;
+            default:
+              var social_media_icon = 'search';
+          }
           var appendString = '<li val="' + components.username.val + '">' +
                              '<img src="' + accountImage + '">' +
                              '<span class="account-name">' +
                              components.username.val +
-                             '</span><span class="account-search-info">' +
+                             '</span><span class="account-search-info fa fa-' + social_media_icon + '"> ' +
                              highestComponentSearch +
                              '</span><span class="public-key-fingerprint">' +
                              key_fingerprint + '</span></li>';
