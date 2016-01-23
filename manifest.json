@@ -15,11 +15,13 @@
   "background" : { "scripts":
     [
       "js/kbpgp-2.0.8-min.js",
+      "js/jquery-2.2.0.min.js",
       "js/kbeRightClick.js"
     ]
   },
   "browser_action": {
     "default_icon": "icons/icon128.png",
-    "default_popup": "kbe.html"
+    "default_popup": "kbe.html",
+    "persistent": true
   }
 }

@@ -1,6 +1,12 @@
 function kbeEncyptText(info) {
   var data = info.selectionText;
-  window.open(chrome.extension.getURL('kbe.html') + "?m=" + encodeURIComponent(window.btoa(data)), '_blank')
+  var popup = window.open(chrome.extension.getURL('kbe.html'), '_blank');
+  $(popup.document).ready(function() {
+    chrome.runtime.sendMessage({
+      from:    'background',
+      data: data,
+    });
+  });
 }
 
 chrome.permissions.contains({
