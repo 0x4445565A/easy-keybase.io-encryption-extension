@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Easy KeyBase.io Encryption Options</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <script src="/js/jquery-2.2.0.min.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row col-md-6 col-md-offset-3">
+    <h1>Easy KeyBase.io Options</h1>
+  </div>
+  <div class="row col-md-6 col-md-offset-3">
+    <div class="alert alert-success" id="status"></div>
+  </div>
+  <div class="row col-md-6 col-md-offset-3">
+    <div class="form-group">
+      <label for="enableSigning">Enable Signing</label><br>
+      <input type="checkbox"  id="enableSigning">
+      <span id="helpBlock" class="help-block">
+      Enable Signing of messages with encrypted private keys.
+      <p>
+        <b>Note:</b> Your key needs to be hosted on KeyBase.io and you need to unlock it everytime with your password.  Your password is never stored and never sent over the internet.  Please review source code and check outbound packets if so desired.
+      </p>
+      </span>
+    </div>
+    <div class="form-group">
+      <label for="signUser">KeyBase Signing User</label>
+      <input type="text"  class="form-control" id="signUser" placeholder="chris">
+      <span id="helpBlock" class="help-block">
+        The keybase username of the signing account
+        <p>
+        <b>Note:</b> I repeat. Your key needs to be hosted on KeyBase.io and you need to unlock it everytime with your password.  Your password is never stored and never sent over the internet.  Please review source code and check outbound packets if so desired.
+      </p>
+      </span>
+    </div>
+    <div class="form-group">
+      <input type="submit" class="form-control btn btn-primary">
+    </div>
+  </div>
+</div>
+
+<script src="js/options.js"></script>
+</body>
+</html>

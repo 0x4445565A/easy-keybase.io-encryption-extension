@@ -1,4 +1,21 @@
 $(document).ready(function() {
+    chrome.storage.sync.get([
+      'enableSigning',
+      'signUser',
+    ], function(e) {
+      console.log(e);
+      if (e.enableSigning) {
+        console.log('enabling signing...');
+        $('.sign-option').prop('checked', true);
+        $('.sign-ui').show();
+      }
+      $('.keybase-user').val(e.signUser);
+    });
+    $('.sign-option').change(function() {
+      $('.keybase-passphrase').toggle(this.checked);
+      $('.keybase-user').toggle(this.checked);
+    });
+
   chrome.runtime.onMessage.addListener(function (msg, sender) {
     if ((msg.from === 'background')) {
       $('.to-encrypt').val(msg.data);
@@ -48,7 +65,6 @@ $(document).ready(function() {
           var components = result.completions[i].components;
           var key_fingerprint = components.key_fingerprint.val.substr(-16).toUpperCase().replace(/(.{4})/g,"$1 ");
           var accountImage = result.completions[i].thumbnail != null ? result.completions[i].thumbnail : '/images/no_photo.png';
-          console.log(components);
           var highestComponent = components.username;
           highestComponent.media = 'username';
           for (var i in components) {
@@ -59,7 +75,6 @@ $(document).ready(function() {
               highestComponent.media = i;
             }
           }
-          console.log(highestComponent);
           var highestComponentSearch = highestComponent.val;
           var re = new RegExp(query, "i");
           highestComponentSearch = highestComponentSearch.replace(re, '<span class="search-highlight">' + query + '</span>');
@@ -112,132 +127,135 @@ $(document).ready(function() {
    * Grab public key and encrypt message upon clicking submit button.
    */
   $('button.encrypt-action').click(function() {
+    console.log($(this));
+    // Reset the error and status text.
     $('.has-error .error-text').text('');
-    // Grab the account name and message.
-    var account_name = $('.keybase-account').val();
-    var data = $('.to-encrypt').val();
+    $('.status').html('');
 
-    // Set status message.
-    $('.status').html('Grabbing Key...');
+    var data = grab_encypt_info();
 
-    // Grab public key from keybase.io
-    $.get("https://keybase.io/" + account_name + "/key.asc", function(account_pgp_key) {
-      // Update status message.
-      $('.status').html($('.status').html() + ' Key found!');
-      // Encrypt the data!
-      encryptData(data, account_pgp_key, $('.pastebin-option').is(':checked'), $('.clipboard-option').is(':checked'));
-    }).fail(function(error) {
-      // Oh no...
-      console.log(error);
-      $('.error-text').text(account_name + ' does not have a public key...');
-    });
-  });
-});
-
-/**
- * Given a keybase.io public key and message return an encrypted pgp message.
- */
-function encryptData(data, account_pgp_key, pastebin, clipboard) {
-  var account = false;
-  // Update status message.
-  $('.status').html($('.status').html() + ' Importing key...');
-
-  // Set up key manager and import key.
-  kbpgp.KeyManager.import_from_armored_pgp({
-    armored: account_pgp_key
-  }, function(err, user) {
-    if (!err) {
-      // Update status and set account.
-      $('.status').html($('.status').html() + ' Key Imported!');
-      account = user;
-    }
-    else {
-      // Oh no.. I don't see how this could happen but here is the catch if it does.
-      console.log(err, user);
-      $('.error-text').text('Oh no something bad happened... Please submit console log dump!');
-    }
+    deferMagic(data);
   });
 
-  // Prevent message creation if account didn't load properly.
-  if (account) {
-    // Update status message.
-    $('.status').html($('.status').html() + ' Creating encrypted message...');
+  function process_request() {
+    var deferredReady = $.Deferred();
+    deferredReady.resolve();
+    return deferredReady.promise();
+  }
 
-    // Set kbpgp params.
-    var params = {
-      msg:         data,
-      encrypt_for: account,
+  function deferMagic(data) {
+    update_status('Grabbing Keys.');
+    var public_key_request = null,
+        private_key_request = null;
+    if (data.for_account != '') {
+      public_key_request = $.get("https://keybase.io/" + data.for_account + "/key.asc")
+    }
+    if (data.sign) {
+      private_key_request = $.get("https://keybase.io/_/api/1.0/user/lookup.json", {
+        usernames: data.sign_account,
+        fields: 'private_keys'
+      });
+    }
+
+    var grab_accounts = function(response, public_key_request, private_key_request) {
+      update_status('Loading account.');
+      if (public_key_request) {
+        kbpgp.KeyManager.import_from_armored_pgp({
+          armored: public_key_request[0]
+        }, function(err, keyManager) {
+          data['account'] = keyManager;
+          if (!data.sign) {
+            create_pgp_block(data);
+          }
+        });
+      }
+      if (data.sign) {
+        update_status('Unpacking private key.');
+        private_key = private_key_request[0].them[0].private_keys.primary;
+        kbpgp.KeyManager.import_from_p3skb({armored: private_key.bundle}, function (err, keyManager) {
+          update_status('Unlocking.');
+          keyManager.unlock_p3skb({passphrase: data.sign_passphrase}, function(err) {
+            data['sign_account'] = keyManager;
+            create_pgp_block(data);
+          });
+
+        });
+      }
     };
 
-    // Encrypt!
+    $.when( process_request(), public_key_request, private_key_request)
+    .done(grab_accounts);
+  }
+
+  function create_pgp_block(data) {
+    var params = {
+      msg: data['msg'],
+      
+    };
+    if (data['account']) {
+      params['encrypt_for'] = data['account'];
+    }
+    if (data.sign) {
+      params['sign_with'] = data['sign_account'];
+    }
+    data = {};
+    update_status('Doing PGP magic.');
     kbpgp.box(params, function(err, result_armored, result_raw) {
-      if (!err) {
-        // Update status.
-        $('.status').html($('.status').html() + ' Done!');
-        // Send PGP encrypted message to the textarea
-        $('.to-encrypt').val(result_armored);
-        if (pastebin) {
-          $.ajax({
-            url: "https://pastebin.com/api/api_post.php",
-            method: "POST",
-            data: {
-              api_option: 'paste',
-              api_user_key: '',
-              api_dev_key: 'a32102de661252014f679a114ee67688',
-              api_paste_private: '1',
-              api_paste_expire_date: 'N',
-              api_paste_format: 'text',
-              api_paste_name: '',
-              api_paste_code: result_armored,
-            },
-            success: function(result) {
-              var pastebin_url = 'https://pastebin.com/raw/' + result.substr(20);
-              $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + " | keybase pgp decrypt\n--------------------------");
-              $('.pastebin').html('<a href="' + pastebin_url + '" target="_blank">' + pastebin_url + '</a>');
-              var pastebin_text = $('<textarea/>');
-              pastebin_text.text(pastebin_url);
-              $('body').append(pastebin_text);
-              pastebin_text.select();
-              document.execCommand('copy', true);
-              pastebin_text.remove();
-            }
-          });
-        }
-        else {
-          $('.pastebin').html('');
-        }
-        if (clipboard) {
-          $('.to-encrypt').select();
-          document.execCommand('copy', true);
-        }
-        $('.complete').animate({ opacity: 1 }, 200);
-        $('.complete').delay(2000).animate({ opacity: 0 }, 1700);
-      }
-      else {
-        // Oh no.. I don't see how this could happen but here is the catch if it does.
-        console.log(err, result_armored, result_raw);
-        $('.error-text').text('Oh no something bad happened... Please submit console log dump!');
-      }
+      update_status('Done!');
+      $('.to-encrypt').val(result_armored);
     });
   }
-}
 
-/*
-$.ajax({
-  url: "https://pastebin.com/api/api_post.php",
-  method: "POST",
-  data: {
-    api_option: 'paste',
-    api_user_key: '',
-    api_dev_key: 'a32102de661252014f679a114ee67688',
-    api_paste_private: '1',
-    api_paste_expire_date: 'N',
-    api_paste_format: 'text',
-    api_paste_name: '',
-    api_paste_code: 'testing woop woop!',
-  },
-  success: function(result) {
-    console.log('https://pastebin.com/raw/' + result.substr(20));
+  function grab_encypt_info() {
+    // Grab post info
+    var data = {
+      for_account: $('.keybase-account').val(),
+      msg: $('.to-encrypt').val(),
+      sign: false,
+    };
+
+    if ($('.sign-option').prop('checked')) {
+      data['sign_account'] = $('.keybase-user').val();
+      data['sign_passphrase'] = $('.keybase-passphrase').val();
+      data['sign'] = true;
+    }
+    return data;
+  }
+
+  function update_status(text) {
+    $('.status').html($('.status').html() + ' ' + text);
+  }
+
+  function copy_to_clipboard() {
+    $('.to-encrypt').select();
+    document.execCommand('copy', true);
+  }
+
+  function upload_pastebin(data) {
+    $.ajax({
+      url: "https://pastebin.com/api/api_post.php",
+      method: "POST",
+      data: {
+        api_option: 'paste',
+        api_user_key: '',
+        api_dev_key: 'a32102de661252014f679a114ee67688',
+        api_paste_private: '1',
+        api_paste_expire_date: 'N',
+        api_paste_format: 'text',
+        api_paste_name: '',
+        api_paste_code: data,
+      },
+      success: function(result) {
+        var pastebin_url = 'https://pastebin.com/raw/' + result.substr(20);
+        $('.to-encrypt').val($('.to-encrypt').val() + "\n" + 'to decrypt simply run the following...' + "\n" + 'curl ' + pastebin_url + " | keybase pgp decrypt\n--------------------------");
+        $('.pastebin').html('<a href="' + pastebin_url + '" target="_blank">' + pastebin_url + '</a>');
+        var pastebin_text = $('<textarea/>');
+        pastebin_text.text(pastebin_url);
+        $('body').append(pastebin_text);
+        pastebin_text.select();
+        document.execCommand('copy', true);
+        pastebin_text.remove();
+       }
+    });
   }
 });
-*/
