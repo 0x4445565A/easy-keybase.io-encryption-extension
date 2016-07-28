@@ -170,11 +170,27 @@ $(document).ready(function() {
         });
       }
       if (data.sign) {
+        console.log(private_key_request);
         update_status('Unpacking private key.');
+        if (private_key_request[0].them[0] == null
+          || typeof private_key_request[0].them[0].private_keys.primary == 'undefined') {
+          update_error('Cannot find user/private key!');
+          throw new Error("Unable to import private key.  Check username and that key is hosted on keybase.io.");
+        }
         private_key = private_key_request[0].them[0].private_keys.primary;
         kbpgp.KeyManager.import_from_p3skb({armored: private_key.bundle}, function (err, keyManager) {
+          if (err) {
+            console.log(err);
+            update_error('Cannot find user/private key!');
+            throw new Error("Unable to import private key.  Check username and that key is hosted on keybase.io.");
+          }
           update_status('Unlocking.');
           keyManager.unlock_p3skb({passphrase: data.sign_passphrase}, function(err) {
+            if (err) {
+              console.log(err);
+              update_error('Cannot unpack key, check password!');
+              throw new Error("Unable to unpack key.  Wrong password?.");     
+            }
             data['sign_account'] = keyManager;
             create_pgp_block(data);
           });
@@ -183,9 +199,14 @@ $(document).ready(function() {
       }
     };
 
-    $.when( process_request(), public_key_request, private_key_request)
+    $.when( process_request(), public_key_request, private_key_request).fail(function() {
+      console.log('fail args', arguments);
+      update_error('Cannot find user!');
+      throw new Error("Unable to find user. WTF mate."); 
+    })
     .done(grab_accounts);
   }
+
 
   function create_pgp_block(data) {
     var params = {
@@ -198,11 +219,27 @@ $(document).ready(function() {
     if (data.sign) {
       params['sign_with'] = data['sign_account'];
     }
-    data = {};
+    data['sign_passphrase'] = null;
+    data['sign_account'] = null;
     update_status('Doing PGP magic.');
     kbpgp.box(params, function(err, result_armored, result_raw) {
+      if (err) {
+        console.log('fail args', arguments);
+        update_error('Unable to encrypt text!');
+        throw new Error("Please submit error report with console log!."); 
+      }
       update_status('Done!');
       $('.to-encrypt').val(result_armored);
+      if (data.pastebin) {
+        update_status('Uploading to PasteBin.');
+        upload_pastebin(result_armored);
+      }
+      else {
+        $('.pastebin').html('');
+      }
+      if (data.clipboard) {
+        copy_to_clipboard();
+      }
     });
   }
 
@@ -212,14 +249,24 @@ $(document).ready(function() {
       for_account: $('.keybase-account').val(),
       msg: $('.to-encrypt').val(),
       sign: false,
+      clipboard: $('.clipboard-option').is(':checked'),
+      pastebin: $('.pastebin-option').is(':checked'),
     };
-
+    if (data.msg == '') {
+      update_error('Message cannot be empty');
+      throw new Error("Message cannot be empty!");
+    }
     if ($('.sign-option').prop('checked')) {
       data['sign_account'] = $('.keybase-user').val();
       data['sign_passphrase'] = $('.keybase-passphrase').val();
       data['sign'] = true;
     }
     return data;
+  }
+
+
+  function update_error(text) {
+    $('.error-text').text(text);
   }
 
   function update_status(text) {
