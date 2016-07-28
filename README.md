@@ -7,6 +7,8 @@ While some do not like this (encrypting with JS) it's the only real option for a
 ### Features ###
 - Encrypting messages with public keys from [keybase.io](https://keybase.io/)
 - Auto complete Keybase.io searching
+- Signing encrypted messages with private keys
+- Signing plain-text messages with private keys
 - Immediately copy encrypted text to clipboard
 - Export straight to [pastebin](https://pastebin.com)
 - Highlighted text can be right clicked and encrypted
