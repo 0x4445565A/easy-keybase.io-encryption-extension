@@ -3,11 +3,11 @@ $(document).ready(function() {
       'enableSigning',
       'signUser',
     ], function(e) {
-      console.log(e);
       if (e.enableSigning) {
         console.log('enabling signing...');
         $('.sign-option').prop('checked', true);
         $('.sign-ui').show();
+        $('.sign-enable').hide();
       }
       $('.keybase-user').val(e.signUser);
     });

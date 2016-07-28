@@ -1,6 +1,7 @@
 $(document).ready(function() {
   $('#status').hide();
   chrome.storage.sync.get(function(s) {
+    console.log(s);
     for (var key in s) {
       if (s.hasOwnProperty(key) && $('input#' + key).length) {
         console.log(s[key]);
@@ -16,8 +17,7 @@ $(document).ready(function() {
   $('input').change(function() {
     var updatedID = $(this).attr('id');
     var update = {};
-    update[updatedID] = $(this).val();
-    console.log(update);
+    update[updatedID] = $(this).is(':checkbox') ? $(this).prop('checked') : $(this).val();
     chrome.storage.sync.set(update, function() {
       $('#status').text($('label[for="' + updatedID + '"]').text() + ' updated...').show();
     });
