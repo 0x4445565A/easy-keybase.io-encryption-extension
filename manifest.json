@@ -17,8 +17,6 @@
   "background" : { "scripts":
     [
       "js/kbpgp-2.0.8-min.js",
-      "js/msgpack.min.js",
-      "js/triplesec-3.0.14-min.js",
       "js/jquery-2.2.0.min.js",
       "js/kbeRightClick.js"
     ]
