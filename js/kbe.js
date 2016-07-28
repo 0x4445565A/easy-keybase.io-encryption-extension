@@ -1,27 +1,27 @@
+chrome.runtime.onMessage.addListener(function (msg, sender) {
+  console.log('msg', msg);
+  if ((msg.from == 'background')) {
+    $('.to-encrypt').val(msg.data);
+  }
+});
 $(document).ready(function() {
     chrome.storage.sync.get([
       'enableSigning',
       'signUser',
     ], function(e) {
       if (e.enableSigning) {
-        console.log('enabling signing...');
-        $('.sign-option').prop('checked', true);
-        $('.sign-ui').show();
-        $('.sign-enable').hide();
-      }
-      $('.keybase-user').val(e.signUser);
-    });
-    $('.sign-option').change(function() {
-      $('.keybase-passphrase').toggle(this.checked);
-      $('.keybase-user').toggle(this.checked);
-    });
-
-  chrome.runtime.onMessage.addListener(function (msg, sender) {
-    if ((msg.from === 'background')) {
-      $('.to-encrypt').val(msg.data);
+      console.log('enabling signing...');
+      $('.sign-option').prop('checked', true);
+      $('.sign-ui').show();
+      $('.sign-enable').hide();
     }
+    $('.keybase-user').val(e.signUser);
   });
 
+  $('.sign-option').change(function() {
+    $('.keybase-passphrase').toggle(this.checked);
+    $('.keybase-user').toggle(this.checked);
+  });
   $('.keybase-account').focus();
   /**
    * Set event listener on dynamic li items.

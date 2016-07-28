@@ -2,10 +2,13 @@ function kbeEncyptText(info) {
   var data = info.selectionText;
   var popup = window.open(chrome.extension.getURL('kbe.html'), '_blank');
   $(popup.document).ready(function() {
-    chrome.runtime.sendMessage({
-      from:    'background',
-      data: data,
-    });
+    setTimeout(function(){
+      chrome.runtime.sendMessage({
+        from: 'background',
+        data: data,
+      });
+    }, 100);
+
   });
 }
 
