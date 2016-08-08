@@ -1,3 +1,5 @@
+[![forthebadge](http://forthebadge.com/images/badges/made-with-crayons.svg)](http://forthebadge.com)
+[![forthebadge](http://forthebadge.com/images/badges/uses-badges.svg)](http://forthebadge.com)
 # Easy KeyBase.io Encrypt Extension
 A Google Chrome extension that uses public keys from [keybase.io](https://keybase.io/) to encrypt messages.
 
