@@ -38,14 +38,36 @@ $(document).ready(function() {
   });
 
   /**
+   * Quick handler for aborting autocomplete.
+   */
+  var autoComplete = {
+    instance: false,
+    abort: function() {
+      if (this.instance) {
+        this.instance.abort();
+        this.instance = false;
+        console.log('Aborting autocomplete connection.');
+      }
+    }
+  };
+
+  /**
+   * Removing autocomplete request if user has already blured the input.
+   */
+  $('.keybase-account').on('blur', function() {
+    autoComplete.abort();
+    $('ul.kb-auto-complete').hide();
+  })
+  /**
    * Take input changes and use it to create autocomplete list.
    */
   $('.keybase-account').on('input', function() {
+    autoComplete.abort();
     // Show autocomplete.
     $('ul.kb-auto-complete').show();
     var query = $(this).val();
     // Send Ajax get to the keybase.io API using the current input.
-    $.ajax({
+    autoComplete.instance = $.ajax({
       url: "https://keybase.io/_/api/1.0/user/autocomplete.json",
       data: {
         q: query,
@@ -119,6 +141,7 @@ $(document).ready(function() {
           // Append list item to autocomplete list.
           $('.kb-auto-complete').append(appendString);
         }
+        autoComplete.instance = false;
       }
     });
   });
