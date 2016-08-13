@@ -3,7 +3,7 @@
   "name": "Easy KeyBase.io Encryption",
   "description": "Easy KeyBase.io Public Key Encryption.",
   "options_page": "options.html",
-  "version": "0.40",
+  "version": "0.41",
   "permissions": [
     "contextMenus",
     "clipboardWrite",
